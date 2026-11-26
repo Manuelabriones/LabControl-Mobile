@@ -1,20 +1,48 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+
+import {
+  View,
+  ActivityIndicator,
+  StyleSheet,
+} from 'react-native';
+
+import { NavigationContainer } from '@react-navigation/native';
+
+import { AuthProvider, useAuth } from './src/context/AuthContext';
+import AuthNavigator from './src/navigation/AuthNavigator';
+import BottomTabNavigator from './src/components/BottomTabNavigator';
+
+// Controlar la navegación según el estado de autenticación
+const AppContent = () => {
+  const { loading, isAuthenticated } = useAuth();
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#D71929" />
+      </View>
+    );
+  }
+
+  return (
+    <NavigationContainer>
+      {isAuthenticated ? <BottomTabNavigator /> : <AuthNavigator />}
+    </NavigationContainer>
+  );
+};
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  loadingContainer: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
+    backgroundColor: '#142D4E',
     justifyContent: 'center',
+    alignItems: 'center',
   },
 });
